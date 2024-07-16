@@ -27,12 +27,12 @@ pub enum OpCode {
     // Jump to a specific instruction, address is stored in a register
     // jmp <addr>
     JMP,
-    // Jump to a specific instruction, address is stored in a register
+    // Increment the program counter by a specific offset
     // jmp <offset>
-    JMPF,
-    // Jump to a specific instruction, address is stored in a register
+    JFW,
+    // Decrement the program counter by a specific offset
     // jmp <offset>
-    JMPB,
+    JBK,
     // Set the equality flag to if two registers contain equal values
     // eq <reg1> <reg2>
     // equality = reg1 == reg2
@@ -50,19 +50,19 @@ pub enum OpCode {
     // equality = reg1 < reg2
     LT,
     // Set the equality flag to if one register is greater than or equal to another
-    // gteq <reg1> <reg2>
+    // gte <reg1> <reg2>
     // equality = reg1 >= reg2
-    GTEQ,
+    GTE,
     // Set the equality flag to if one register is less than or equal to another
-    // lteq <reg1> <reg2>
+    // lte <reg1> <reg2>
     // equality = reg1 <= reg2
-    LTEQ,
+    LTE,
     // Jump to an instruction if the equality flag is set to true
     // jeq <addr>
     JEQ,
     // Jump to an instruction if the equality flag is set to false
-    // jneq <addr>
-    JNEQ,
+    // jne <addr>
+    JNE,
     // Used to execute user-defined "system calls"
     // Allows adding custom functionality to the VM
     // sys <syscall_id>
@@ -81,16 +81,16 @@ impl From<u8> for OpCode {
             4 => OpCode::MUL,
             5 => OpCode::DIV,
             6 => OpCode::JMP,
-            7 => OpCode::JMPF,
-            8 => OpCode::JMPB,
+            7 => OpCode::JFW,
+            8 => OpCode::JBK,
             9 => OpCode::EQ,
             10 => OpCode::NEQ,
             11 => OpCode::GT,
             12 => OpCode::LT,
-            13 => OpCode::GTEQ,
-            14 => OpCode::LTEQ,
+            13 => OpCode::GTE,
+            14 => OpCode::LTE,
             15 => OpCode::JEQ,
-            16 => OpCode::JNEQ,
+            16 => OpCode::JNE,
             17 => OpCode::SYS,
             _ => OpCode::UKWN,
         }
@@ -107,16 +107,16 @@ impl From<&str> for OpCode {
             "mul" => OpCode::MUL,
             "div" => OpCode::DIV,
             "jmp" => OpCode::JMP,
-            "jmpf" => OpCode::JMPF,
-            "jmpb" => OpCode::JMPB,
+            "jmpf" => OpCode::JFW,
+            "jmpb" => OpCode::JBK,
             "eq" => OpCode::EQ,
             "neq" => OpCode::NEQ,
             "gt" => OpCode::GT,
             "lt" => OpCode::LT,
-            "gteq" => OpCode::GTEQ,
-            "lteq" => OpCode::LTEQ,
+            "gte" => OpCode::GTE,
+            "lte" => OpCode::LTE,
             "jeq" => OpCode::JEQ,
-            "jneq" => OpCode::JNEQ,
+            "jne" => OpCode::JNE,
             "sys" => OpCode::SYS,
             _ => OpCode::UKWN,
         }

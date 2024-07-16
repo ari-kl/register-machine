@@ -24,7 +24,7 @@ fn main() {
     vm.write_u8(1); // 17
     vm.write_u8(2); // 18
 
-    vm.write_opcode(OpCode::JNEQ); // 19
+    vm.write_opcode(OpCode::JNE); // 19
     vm.write_u8(3); // 20
 
     vm.run();
