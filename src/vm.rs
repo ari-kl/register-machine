@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use crate::opcode::OpCode;
 
+#[derive(Clone)]
 pub struct VM {
     pub registers: [i64; 256],
     pub pc: usize,
