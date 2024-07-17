@@ -34,17 +34,21 @@ impl Lexer {
         }
     }
 
-    pub fn scan_tokens(&mut self) {
+    pub fn scan_tokens(&mut self) -> Result<(), String> {
         while !self.is_at_end() {
-            self.next_token();
+            if let Err(e) = self.next_token() {
+                return Err(e);
+            }
         }
+
+        Ok(())
     }
 
-    fn next_token(&mut self) {
+    fn next_token(&mut self) -> Result<(), String> {
         self.skip_whitespace();
 
         if self.is_at_end() {
-            return;
+            return Ok(());
         }
 
         self.start = self.current;
@@ -52,10 +56,10 @@ impl Lexer {
         let c = self.advance();
 
         match c {
-            'a'..='z' | 'A'..='Z' => self.opcode(),
-            '%' => self.register(),
-            '#' => self.integer(),
-            _ => panic!("Unexpected character: {}", c),
+            'a'..='z' | 'A'..='Z' => Ok(self.opcode()),
+            '%' => Ok(self.register()),
+            '#' => Ok(self.integer()),
+            _ => Err(format!("Unexpected character: {}", c)),
         }
     }
 
@@ -91,12 +95,13 @@ impl Lexer {
     }
 
     fn register(&mut self) {
-        let c = self.peek();
-        if c.is_digit(10) {
-            let digit = c.to_digit(10).unwrap();
-            self.advance();
-            self.add_token(TokenType::Register(digit as u8));
+        let mut value = 0;
+        while self.peek().is_digit(10) {
+            let digit = self.advance().to_digit(10).unwrap();
+            value = value * 10 + digit as u16;
         }
+
+        self.add_token(TokenType::Register(value as u8));
     }
 
     fn integer(&mut self) {

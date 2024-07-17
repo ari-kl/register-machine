@@ -147,7 +147,7 @@ impl VM {
                 };
             }
             OpCode::UKWN => {
-                println!("Unknown opcode: {}", self.code[self.pc]);
+                println!("Unknown opcode: {}", self.code[self.pc - 1]);
                 false
             }
         }

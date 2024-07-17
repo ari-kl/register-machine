@@ -3,13 +3,16 @@ use crate::vm::VM;
 mod lexer;
 mod parser;
 
-pub fn assemble(input: String, vm: VM) -> VM {
+pub fn assemble(input: String, vm: VM) -> Result<VM, String> {
     let mut lexer = lexer::Lexer::new(input);
-    lexer.scan_tokens();
+
+    if let Err(e) = lexer.scan_tokens() {
+        return Err(e);
+    }
 
     let mut parser = parser::Parser::new(lexer.tokens, vm);
 
-    parser.parse()
+    Ok(parser.parse())
 }
 
 #[cfg(test)]
@@ -19,7 +22,7 @@ mod assembler_tests {
     #[test]
     fn test_assemble() {
         let input = String::from("load %0 #123\nload %1 #456\nadd %2 %0 %1\n");
-        let mut vm = assemble(input, VM::new());
+        let mut vm = assemble(input, VM::new()).unwrap();
 
         vm.run();
 
@@ -31,12 +34,12 @@ mod assembler_tests {
     #[test]
     fn test_append_code() {
         let input = String::from("load %0 #123\nload %1 #456\nadd %2 %0 %1\n");
-        let mut vm = assemble(input, VM::new());
+        let mut vm = assemble(input, VM::new()).unwrap();
 
         vm.run();
 
         let input2 = String::from("load %3 #579\neq %3 %2\n");
-        vm = assemble(input2, vm);
+        vm = assemble(input2, vm).unwrap();
 
         vm.run();
 

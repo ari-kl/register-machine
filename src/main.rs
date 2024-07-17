@@ -1,32 +1,32 @@
-use register_machine::{opcode::OpCode, vm};
+use register_machine::{assembler::assemble, vm::VM};
+
+mod repl;
 
 fn main() {
-    let mut vm = vm::VM::new();
+    // If no arguments are passed, start the REPL
+    let args: Vec<String> = std::env::args().collect();
 
-    vm.write_opcode(OpCode::LOAD); // 0
-    vm.write_u8(0); // 1
-    vm.write_u16(10); // 2, 3
+    if args.len() == 1 {
+        repl::start_repl();
+    } else {
+        // If arguments are passed, read the file and run the program
+        let filename = &args[1];
+        let input = std::fs::read_to_string(filename).unwrap();
 
-    vm.write_opcode(OpCode::LOAD); // 4
-    vm.write_u8(1); // 5
-    vm.write_u16(100); // 6, 7
+        let mut vm = assemble(input, VM::new()).expect("Failed to assemble program");
 
-    vm.write_opcode(OpCode::LOAD); // 8
-    vm.write_u8(3); // 9
-    vm.write_u16(12); // 10, 11
+        // Print syscall
+        // Print the value a register
+        // Register to print stored at %80
+        vm.add_syscall(0, |vm| {
+            let register = vm.registers[80];
+            let value = vm.registers[register as usize];
 
-    vm.write_opcode(OpCode::ADD); // 12
-    vm.write_u8(2); // 13
-    vm.write_u8(2); // 14
-    vm.write_u8(0); // 15
+            println!("{}", value);
 
-    vm.write_opcode(OpCode::EQ); // 16
-    vm.write_u8(1); // 17
-    vm.write_u8(2); // 18
+            true
+        });
 
-    vm.write_opcode(OpCode::JNE); // 19
-    vm.write_u8(3); // 20
-
-    vm.run();
-    println!("{:?}", vm.registers);
+        vm.run();
+    }
 }

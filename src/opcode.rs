@@ -2,7 +2,7 @@
 // registers (u8) are indicated by <reg>
 // values (u16) are indicated by [value]
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub enum OpCode {
     // Stops the VM execution
     STOP,
