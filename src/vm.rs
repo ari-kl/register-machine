@@ -8,7 +8,7 @@ pub struct VM {
     pub pc: usize,
     pub code: Vec<u8>,
     pub comparison: bool,
-    pub syscalls: HashMap<i64, fn(&mut VM) -> bool>,
+    pub syscalls: HashMap<u16, fn(&mut VM) -> bool>,
 }
 
 impl VM {
@@ -39,6 +39,12 @@ impl VM {
                 let register = self.read_u8() as usize;
                 let value = self.read_u16() as i64;
                 self.registers[register] = value;
+                true
+            }
+            OpCode::MOV => {
+                let destination = self.read_u8() as usize;
+                let source = self.read_u8() as usize;
+                self.registers[destination] = self.registers[source];
                 true
             }
             OpCode::ADD => {
@@ -135,7 +141,7 @@ impl VM {
                 true
             }
             OpCode::SYS => {
-                let syscall_id = self.registers[self.read_u8() as usize];
+                let syscall_id = self.read_u16();
                 let syscall = self.syscalls.get(&syscall_id);
 
                 return match syscall {
@@ -180,7 +186,7 @@ impl VM {
         self.code.push(value as u8);
     }
 
-    pub fn add_syscall(&mut self, id: i64, syscall: fn(&mut VM) -> bool) {
+    pub fn register_syscall(&mut self, id: u16, syscall: fn(&mut VM) -> bool) {
         self.syscalls.insert(id, syscall);
     }
 }
@@ -214,6 +220,19 @@ mod vm_tests {
         vm.write_u16(76);
         vm.run();
         assert_eq!(vm.registers[0], 76);
+    }
+
+    #[test]
+    fn test_mov() {
+        let mut vm = VM::new();
+        vm.write_opcode(OpCode::LOAD);
+        vm.write_u8(0);
+        vm.write_u16(128);
+        vm.write_opcode(OpCode::MOV);
+        vm.write_u8(1);
+        vm.write_u8(0);
+        vm.run();
+        assert_eq!(vm.registers[1], 128);
     }
 
     #[test]
@@ -588,14 +607,14 @@ mod vm_tests {
     fn test_sys() {
         let mut vm = VM::new();
 
-        vm.add_syscall(0, |vm| {
+        vm.register_syscall(0, |vm| {
             vm.registers[0] = 321;
 
             true
         });
 
         vm.write_opcode(OpCode::SYS);
-        vm.write_u8(0);
+        vm.write_u16(0);
         vm.run();
 
         assert_eq!(vm.registers[0], 321);

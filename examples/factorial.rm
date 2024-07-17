@@ -1,3 +1,4 @@
+! This program takes the factorial of the number stored in %2 and prints it from %1
 load %0 #0
 load %1 #1
 load %2 #6
@@ -7,4 +8,4 @@ mul %1 %1 %2
 sub %2 %2 %80
 eq %2 %80
 jne %3
-sys %0
+sys #0

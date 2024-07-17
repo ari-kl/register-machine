@@ -56,6 +56,7 @@ impl Lexer {
         let c = self.advance();
 
         match c {
+            '!' => Ok(self.comment()),
             'a'..='z' | 'A'..='Z' => Ok(self.opcode()),
             '%' => Ok(self.register()),
             '#' => Ok(self.integer()),
@@ -112,6 +113,12 @@ impl Lexer {
         }
 
         self.add_token(TokenType::Integer(value));
+    }
+
+    fn comment(&mut self) {
+        while self.peek() != '\n' && !self.is_at_end() {
+            self.advance();
+        }
     }
 
     fn add_token(&mut self, token_type: TokenType) {

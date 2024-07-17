@@ -8,7 +8,7 @@ pub fn start_repl() {
     // Print syscall
     // Print the value a register
     // Register to print stored at %80
-    vm.add_syscall(0, |vm| {
+    vm.register_syscall(0, |vm| {
         let register = vm.registers[80];
         let value = vm.registers[register as usize];
 

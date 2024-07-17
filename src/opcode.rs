@@ -9,6 +9,9 @@ pub enum OpCode {
     // Load a value into a register
     // load <dst> [value]
     LOAD,
+    // Move a value from one register to another
+    // mov <dst> <src>
+    MOV,
     // Add two register values together and store the result in a register
     // add <dst> <src1> <src2>
     // dst = src1 + src2
@@ -66,7 +69,7 @@ pub enum OpCode {
     JNE,
     // Used to execute user-defined "system calls"
     // Allows adding custom functionality to the VM
-    // sys <syscall_id>
+    // sys [syscall_id]
     SYS,
     // Unknown opcode
     UKWN,
@@ -77,22 +80,23 @@ impl From<u8> for OpCode {
         match v {
             0 => OpCode::STOP,
             1 => OpCode::LOAD,
-            2 => OpCode::ADD,
-            3 => OpCode::SUB,
-            4 => OpCode::MUL,
-            5 => OpCode::DIV,
-            6 => OpCode::JMP,
-            7 => OpCode::JFW,
-            8 => OpCode::JBK,
-            9 => OpCode::EQ,
-            10 => OpCode::NEQ,
-            11 => OpCode::GT,
-            12 => OpCode::LT,
-            13 => OpCode::GTE,
-            14 => OpCode::LTE,
-            15 => OpCode::JEQ,
-            16 => OpCode::JNE,
-            17 => OpCode::SYS,
+            2 => OpCode::MOV,
+            3 => OpCode::ADD,
+            4 => OpCode::SUB,
+            5 => OpCode::MUL,
+            6 => OpCode::DIV,
+            7 => OpCode::JMP,
+            8 => OpCode::JFW,
+            9 => OpCode::JBK,
+            10 => OpCode::EQ,
+            11 => OpCode::NEQ,
+            12 => OpCode::GT,
+            13 => OpCode::LT,
+            14 => OpCode::GTE,
+            15 => OpCode::LTE,
+            16 => OpCode::JEQ,
+            17 => OpCode::JNE,
+            18 => OpCode::SYS,
             _ => OpCode::UKWN,
         }
     }
@@ -103,6 +107,7 @@ impl From<&str> for OpCode {
         match s {
             "stop" => OpCode::STOP,
             "load" => OpCode::LOAD,
+            "mov" => OpCode::MOV,
             "add" => OpCode::ADD,
             "sub" => OpCode::SUB,
             "mul" => OpCode::MUL,
