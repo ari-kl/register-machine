@@ -16,6 +16,13 @@ You can also run a file with:
 cargo run -- examples/<your_file>.rm
 ```
 
+Note that the default repl and file execution have a registered syscall with an id `0` that prints the value of the register pointed to by register `%80`. For example, the following code will print `321`:
+```asm
+load %1 #321 ! This is the register we want to print
+load %80 #1 ! We are setting %80 to the id of the register we want to print, in this case %1
+sys #0 ! This will call the syscall with id 0, which will print the value of the register pointed to by %80
+```
+
 ## Features
 - 256 registers
 - 19 instructions
