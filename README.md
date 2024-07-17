@@ -32,11 +32,12 @@ sys #0 ! This will call the syscall with id 0, which will print the value of the
 - User-defined syscalls
 - Repl & file execution for the base VM
 
-For examples on how to use the VM, check the `examples` directory.
+For examples on how to use the default assembly, check the `examples` directory.
 
 ## Instructions
 
 Note: values wrapped in `<>` are registers, and values wrapped in `[]` are integer values.
+When writing bytecode directly to the VM, registers should be written using `write_u8` and integer values using `write_u16`.
 
 | Instruction | Opcode | Description | Usage |
 |-------------|--------|-------------|-------|
@@ -85,6 +86,7 @@ This code will register a syscall with the id `0` that will print `Hello from sy
 The closure should return a boolean value determining the success of the syscall. If the syscall fails, the VM will stop execution.
 
 ## Future Ideas:
+- [ ] Bytecode writing documentation
 - [ ] Memory Access
 - [ ] Improved error handling
 - [ ] Improve assembler
